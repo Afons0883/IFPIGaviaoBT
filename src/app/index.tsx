@@ -1,98 +1,218 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// ============================================================================
+// PADRÃO BIG TRIPE (ANTI-PADRÃO: TUDO NO MESMO ARQUIVO)
+// Tela Inicial: Apresentação das Categorias (Comidas e Bebidas)
+// ============================================================================
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { simularConsultaCategorias } from "../data/mockDatabase";
 
 export default function HomeScreen() {
+  const router = useRouter();
+
+  // Estados gerenciados diretamente na View (Sem ViewModel)
+  const [carregando, setCarregando] = useState<boolean>(true);
+  const [categorias, setCategorias] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Busca direta do banco simulado com delay assíncrono
+    async function carregarDados() {
+      try {
+        setCarregando(true);
+        const resultado = await simularConsultaCategorias();
+        setCategorias(resultado);
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarDados();
+  }, []);
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <View style={styles.tela}>
+      {/* CABEÇALHO ROXO COM BORDAS ARREDONDADAS */}
+      <View style={styles.cabecalhoContainer}>
+        <SafeAreaView edges={["top"]}>
+          <View style={styles.cabecalhoConteudo}>
+            {/* Linha com Ícone do Gavião e Nome da Lanchonete */}
+            <View style={styles.logoLinha}>
+              <Image
+                source={require("../../assets/images/menu/gaviao-logo.png")}
+                style={styles.logoGaviao}
+                resizeMode="contain"
+              />
+              <Text style={styles.tituloHeader}>IFPI Gavião</Text>
+            </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+            {/* Mensagem de Boas-Vindas */}
+            <Text style={styles.subtituloTexto}>
+              O que você deseja pedir hoje?
+            </Text>
+            <Text style={styles.subtituloDestaque}>Escolha uma categoria:</Text>
+          </View>
+        </SafeAreaView>
+      </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      {/* ÁREA DE CONTEÚDO */}
+      <ScrollView
+        contentContainerStyle={styles.conteudoScroll}
+        showsVerticalScrollIndicator={false}
+      >
+        {carregando ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#501673" />
+            <Text style={styles.loadingTexto}>Consultando cardápio...</Text>
+          </View>
+        ) : (
+          <View style={styles.gridCategorias}>
+            {categorias.map((cat) => (
+              <TouchableOpacity
+                key={cat.id}
+                activeOpacity={0.88}
+                style={[styles.cardCategoria, { borderColor: cat.corBorda }]}
+                onPress={() => router.push(`/category/${cat.id}` as any)}
+              >
+                {/* Imagem de Capa da Categoria */}
+                <Image
+                  source={cat.imagem}
+                  style={styles.imagemCategoria}
+                  resizeMode="cover"
+                />
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+                {/* Rodapé do Card com Nome e Seta */}
+                <View style={styles.rodapeCard}>
+                  <Text style={styles.nomeCategoria}>{cat.nome}</Text>
+                  <Ionicons
+                    name="arrow-forward"
+                    size={20}
+                    color={cat.corSeta}
+                  />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
+// Estilos gigantescos concentrados no final do arquivo da tela (Típico do Big Tripe)
 const styles = StyleSheet.create({
-  container: {
+  tela: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#ffffff",
   },
-  safeArea: {
+  cabecalhoContainer: {
+    backgroundColor: "#501673",
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    paddingBottom: 28,
+    paddingHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  cabecalhoConteudo: {
+    alignItems: "center",
+    paddingTop: 12,
+  },
+  logoLinha: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 14,
+  },
+  logoGaviao: {
+    width: 38,
+    height: 38,
+    marginRight: 10,
+  },
+  tituloHeader: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#ffffff",
+    letterSpacing: 0.3,
+  },
+  subtituloTexto: {
+    fontSize: 15,
+    color: "#ffffff",
+    textAlign: "center",
+    opacity: 0.95,
+    lineHeight: 22,
+  },
+  subtituloDestaque: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#ffffff",
+    textAlign: "center",
+    lineHeight: 22,
+  },
+  conteudoScroll: {
+    paddingVertical: 28,
+    paddingHorizontal: 16,
+    flexGrow: 1,
+  },
+  loadingContainer: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 60,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  loadingTexto: {
+    marginTop: 12,
+    fontSize: 15,
+    color: "#6c757d",
+  },
+  gridCategorias: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 14,
+  },
+  cardCategoria: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
+    borderWidth: 2,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
   },
-  title: {
-    textAlign: 'center',
+  imagemCategoria: {
+    width: "100%",
+    height: 210,
   },
-  code: {
-    textTransform: 'uppercase',
+  rodapeCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    backgroundColor: "#ffffff",
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  nomeCategoria: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1a1a1a",
   },
 });
