@@ -9,81 +9,24 @@
 
 O **IFPI Gavião** é um aplicativo de cardápio digital desenvolvido com **React Native**, **Expo (v57)** e **TypeScript** para uma lanchonete fictícia institucional.
 
-O sufixo **"BT"** no nome do projeto refere-se ao padrão **"Big Tripe"** — um termo bem-humorado para designar a **ausência de padrão de projeto**, onde o desenvolvedor aglutina em um único arquivo (ou um arquivo por tela):
-- Dados mockados e chamadas diretas de banco de dados;
-- Regras de negócio e cálculos de apresentação;
-- Gerenciamento de estado e controle de loading;
-- Componentes visuais repetidos e estilização monolítica com `StyleSheet`.
+O sufixo **"BT"** no nome do projeto refere-se ao padrão **"Big Tripe"** — uma referência bem-humorada à **ausência de padrão de projeto**, onde o desenvolvedor implementa tudo em um único arquivo (ou, no caso do Expo Router, tudo concentrado em um único arquivo por tela):
+- Acesso a dados e simulação de banco de dados diretamente na tela;
+- Regras de negócio e cálculos de apresentação misturados com a interface;
+- Gerenciamento direto de estado e controle de loading na própria View;
+- Ausência de separação arquitetural e estilização monolítica com `StyleSheet`.
 
-Este projeto foi construído propositalmente nesse formato para servir como **base de estudo e atividade prática de refatoração arquitetural**.
-
----
-
-## 🎯 Objetivo da Atividade: Refatoração para o MVVM Simplificado
-
-Sua missão nesta atividade é realizar um **fork** deste repositório e executar uma **refatoração arquitetural completa**, transformando o código "Big Tripe" em uma solução elegante, escalável e desacoplada, utilizando o **MVVM Simplificado** apresentado nas aulas.
-
-### 📐 O que é o MVVM Simplificado?
-
-O padrão **Model-View-ViewModel (MVVM) Simplificado** divide a aplicação em camadas bem delimitadas, garantindo que a interface com o usuário (View) fique completamente livre de regras de negócio ou de acesso a dados:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                            VIEW                             │
-│     (Telas Expo Router em src/app/ e Componentes Visuais)   │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ Observa estado / Notifica eventos
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                          VIEWMODEL                          │
-│        (Custom Hooks / Controladores de Apresentação)       │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ Solicita dados
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     REPOSITORY / SERVICE                    │
-│      (Acesso a dados, API ou Banco com Atraso Assíncrono)   │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ Mapeia entidades
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                            MODEL                            │
-│              (Entidades e Tipagens TypeScript)              │
-└─────────────────────────────────────────────────────────────┘
-```
+O banco de dados da aplicação é local, mas foi construído para simular um pequeno atraso assíncrono para entregar os dados, comportando-se como um banco de dados ou API de verdade.
 
 ---
 
-## 📋 Checklist de Refatoração
+## 🎯 Atividade Prática: Refatoração para o MVVM Simplificado
 
-Para completar a atividade, você deve reorganizar o projeto nas seguintes camadas:
+Esta aplicação serve como base para a atividade prática da disciplina.
 
-### 1. Camada Model (`src/models/`)
-- [ ] Criar as interfaces/tipos formais do domínio:
-  - `Product` (id, nome, preco, categoriaId, categoriaNome, descricao, proteinas, carboidratos, gorduras, imagens).
-  - `Category` (id, nome, corBorda, corSeta, imagem).
-  - Tipagens auxiliares necessárias (ex: `NutritionalInfo`).
-
-### 2. Camada Repository / Service (`src/services/` ou `src/repositories/`)
-- [ ] Isolar as operações de dados que hoje estão no arquivo mockado.
-- [ ] Manter e encapsular a simulação de **atraso assíncrono (I/O)**, demonstrando como a aplicação lidaria com um banco local (SQLite/WatermelonDB) ou API REST remota.
-- [ ] Assegurar que os métodos retornem tipagens estritas baseadas nos Models (`Promise<Product[]>`, `Promise<Product | null>`, etc.).
-
-### 3. Camada ViewModel (`src/viewmodels/` ou `src/hooks/`)
-- [ ] Implementar ViewModels (por meio de Custom Hooks no React) para cada uma das telas:
-  - **`useHomeViewModel`**: gerencia carregamento das categorias e navegação.
-  - **`useCategoryViewModel`**: recebe a categoria selecionada, gerencia a listagem, o estado de loading e a navegação para o detalhe.
-  - **`useItemDetailViewModel`**: busca os detalhes do produto, gerencia o estado de loading e toda a regra de negócio do seletor de quantidade (incremento, decremento com limite mínimo).
-- [ ] A View **NÃO** deve conter `useEffect` para chamadas diretas de dados nem regras de cálculo.
-
-### 4. Camada View e Componentização (`src/components/` e `src/app/`)
-- [ ] Limpar as telas em `src/app/`, tornando-as componentes de apresentação que apenas consomem seus respectivos ViewModels.
-- [ ] Extrair componentes visuais reutilizáveis:
-  - `Header`: cabeçalho roxo padronizado (com suporte a título, subtítulo ou botão de retorno).
-  - `CategoryCard`: card da tela inicial com imagem e borda colorida.
-  - `ProductCard`: item da lista com miniatura, título, preço e seta.
-  - `QuantitySelector`: controle de quantidade com botões de diminuir (`-`) e aumentar (`+`).
-  - `PriceBadge`: etiqueta verde de preço.
+A atividade consiste em:
+1. Fazer um **fork** deste repositório;
+2. Realizar uma **refatoração completa** do projeto para adequá-lo ao **MVVM Simplificado**, seguindo rigorosamente as recomendações, padrões e convenções apresentados nas aulas e no material didático (livro da disciplina de PDM);
+3. Garantir que a aplicação mantenha a mesma identidade visual, comportamento e simulação assíncrona do banco de dados após a refatoração.
 
 ---
 
@@ -114,29 +57,15 @@ Para completar a atividade, você deve reorganizar o projeto nas seguintes camad
 
 ## 📤 Instruções para Envio da Atividade
 
-1. Faça um **Fork** deste repositório oficial para a sua conta do GitHub.
-2. Crie uma branch para o seu desenvolvimento:
+1. Faça o **Fork** deste repositório para o seu perfil pessoal no GitHub.
+2. Clone o seu fork na sua máquina de desenvolvimento.
+3. Crie uma branch para o seu trabalho:
    ```bash
    git checkout -b feature/refactor-mvvm
    ```
-3. Implemente a refatoração mantendo a mesma identidade visual e as funcionalidades originais.
-4. Faça commits frequentes e bem descritos:
-   ```bash
-   git commit -m "feat(model): cria entidades Product e Category"
-   ```
-5. Envie para o seu GitHub e submeta o link do repositório conforme orientado no Google Classroom / SIGAA.
-
----
-
-## 💡 Critérios de Avaliação
-
-| Critério | Descrição |
-| :--- | :--- |
-| **Separação de Camadas** | As camadas Model, View, ViewModel e Service/Repository estão claramente separadas em diretórios próprios? |
-| **Integridade do ViewModel** | As telas estão livres de chamadas diretas de dados e de regras de estado de negócio? |
-| **Componentização** | Componentes comuns (Header, Cards, Seletor) foram extraídos e reutilizados adequadamente? |
-| **Fidelidade Visual e UX** | O aplicativo manteve a estética, cores, fluxo de navegação e tratamento de loading originais? |
-| **Boas Práticas & Tipagem** | O TypeScript está sendo utilizado de forma consistente sem uso indiscriminado de `any`? |
+4. Realize a refatoração completa para o **MVVM Simplificado**.
+5. Faça commits frequentes e bem descritos.
+6. Envie suas alterações para o seu GitHub e submeta o link do repositório conforme as orientações do professor no Google Classroom / SIGAA.
 
 ---
 
