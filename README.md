@@ -69,5 +69,5 @@ A atividade consiste em:
 
 ---
 
-*IFPI - Campus Pedro II / Campus Teresina Central*  
+*IFPI - Campus Piripiri*  
 *Tecnologia em Análise e Desenvolvimento de Sistemas (TADS)*
