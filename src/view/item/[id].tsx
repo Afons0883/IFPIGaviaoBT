@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useItemViewModel } from "../../ViewModel/UseItemViewModel";
+import { useItemViewModel } from "../../viewmodel/UseItemViewModel";
 
 export default function ItemDetailScreen() {
   const [state, actions] = useItemViewModel();

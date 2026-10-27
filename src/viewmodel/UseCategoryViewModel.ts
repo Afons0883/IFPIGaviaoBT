@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { CardapioDataSource } from "../Model/CardapioDataSource";
-import { Produto } from "@/Model/produto";
+import { CardapioDataSource } from "../model/CardapioDataSource";
+import { Produto } from "@/model/produto";
 import { formatarPreco } from "./formatarPreco";
 
 // ============================================================================

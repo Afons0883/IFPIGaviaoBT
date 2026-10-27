@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { router } from "expo-router";
-import { CardapioDataSource } from "../Model/CardapioDataSource";
-import { Categoria } from "../Model/categoria";
-
+import { CardapioDataSource } from "../model/CardapioDataSource";
+import { Categoria } from "../model/categoria";
 // ============================================================================
 // VIEWMODEL: useHomeViewModel
 // Gerencia o estado da tela inicial (categorias) e a navegação até a
