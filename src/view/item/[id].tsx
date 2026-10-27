@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useItemViewModel } from "../../viewmodel/UseItemViewModel";
+import { useItemViewModel } from "@/viewmodel/useItemViewModel";
 
 export default function ItemDetailScreen() {
   const [state, actions] = useItemViewModel();
@@ -153,7 +153,9 @@ export default function ItemDetailScreen() {
         </ScrollView>
       ) : (
         <View style={styles.erroContainer}>
-          <Text style={styles.erroTexto}>Item não encontrado.</Text>
+          <Text style={styles.erroTexto}>
+            {state.erro ?? "Item não encontrado."}
+          </Text>
         </View>
       )}
     </View>

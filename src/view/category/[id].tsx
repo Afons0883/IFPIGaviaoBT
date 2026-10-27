@@ -16,7 +16,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useCategoryViewModel } from "../../viewmodel/UseCategoryViewModel";
+import { useCategoryViewModel } from "@/viewmodel/useCategoryViewModel";
+
 export default function CategoryScreen() {
   const [state, actions] = useCategoryViewModel();
 
@@ -50,6 +51,10 @@ export default function CategoryScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#501673" />
           <Text style={styles.loadingTexto}>Buscando itens no banco...</Text>
+        </View>
+      ) : state.erro ? (
+        <View style={styles.vazioContainer}>
+          <Text style={styles.erroTexto}>{state.erro}</Text>
         </View>
       ) : (
         <FlatList
@@ -191,5 +196,10 @@ const styles = StyleSheet.create({
   vazioTexto: {
     fontSize: 15,
     color: "#8c959f",
+  },
+  erroTexto: {
+    fontSize: 16,
+    color: "#dc3545",
+    textAlign: "center",
   },
 });

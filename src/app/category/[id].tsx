@@ -1,3 +1,3 @@
-import CategoryScreen from "@/View/category/[id]";
+import CategoryScreen from "@/view/category/[id]";
 
 export default CategoryScreen;

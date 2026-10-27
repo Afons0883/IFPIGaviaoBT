@@ -1,3 +1,3 @@
-import ItemDetailScreen from "@/View/item/[id]";
+import ItemDetailScreen from "@/view/item/[id]";
 
 export default ItemDetailScreen;
